@@ -1,0 +1,10 @@
+{
+	"id": "obsidian-geographics",
+	"name": "Geographics",
+	"version": "0.0.1",
+	"minAppVersion": "0.9.12",
+	"description": "Geo map view for Obsidian.",
+	"author": "Dmitriy Shulha",
+	"authorUrl": "https://github.com/Dmitriy-Shulha/obsidian-geographics",
+	"isDesktopOnly": false
+}
