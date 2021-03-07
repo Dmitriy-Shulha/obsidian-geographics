@@ -1,9 +1,12 @@
-import { Notice, Plugin } from 'obsidian';
+import { Notice, Plugin, WorkspaceLeaf } from 'obsidian';
+import MapView from './ui/view/map';
+import { VIEW_TYPE_MAP } from './constants';
 import { GeographicSettingsTab, ISettings, DEFAULT_SETTINGS } from './settings';
 import { GeographicModal } from './ui/modal';
 
 export default class GeographicPlugin extends Plugin {
 	settings: ISettings;
+	private view: MapView;
 
 	async onload() {
 		console.log('loading plugin');
@@ -16,9 +19,27 @@ export default class GeographicPlugin extends Plugin {
 
 		this.addStatusBarItem().setText('Status Bar Text');
 
+		this.registerView(
+			VIEW_TYPE_MAP,
+			(leaf: WorkspaceLeaf) => (this.view = new MapView(leaf))
+		);
+
+		this.addCommand({
+			id: "show-geographic-view",
+			name: "Open view",
+			checkCallback: (checking: boolean) => {
+			  if (checking) {
+				return (
+				  this.app.workspace.getLeavesOfType(VIEW_TYPE_MAP).length === 0
+				);
+			  }
+			  this.initLeaf();
+			},
+		  });
+
 		this.addCommand({
 			id: 'open-geographic-modal',
-			name: 'Open Geographic Modal',
+			name: 'Open Geographic Modal is it changing',
 			callback: () => {
 				console.log('Geographic Callback');
 			},
@@ -50,6 +71,15 @@ export default class GeographicPlugin extends Plugin {
 	onunload() {
 		console.log('unloading plugin');
 	}
+
+	initLeaf(): void {
+		if (this.app.workspace.getLeavesOfType(VIEW_TYPE_MAP).length) {
+		  return;
+		}
+		this.app.workspace.getRightLeaf(false).setViewState({
+		  type: VIEW_TYPE_MAP,
+		});
+	  }
 
 	async loadSettings() {
 		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
