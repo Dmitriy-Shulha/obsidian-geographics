@@ -32,7 +32,25 @@ export default class MapView extends ItemView {
         this.map = new Map({
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           target: (this as any).contentEl,
-          props: {},
+          props: {
+              segments: [
+                {
+                  "size": 5,
+                  "label": "this thing",
+                  "color": "rgb(100,180,200)"
+                },
+                {
+                  "size": 8,
+                  "label": "that thing",
+                  "color": "rgb(150,200,250)"
+                },
+                {
+                  "size": 11,
+                  "label": "another thing",
+                  "color": "rgb(80,100,150)"
+                }
+              ]
+          },
         });
     }
 }
