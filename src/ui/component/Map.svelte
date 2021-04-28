@@ -1,43 +1,74 @@
-<script>
+ <script>
 
-  import { geoAlbers, geoPath } from "d3-geo";
-  import { onMount } from "svelte";
-  import { feature } from "topojson";
+    import { geoPath } from "d3-geo";
+    import { feature } from "topojson";
+    import { maps, COUNTRIES_110M } from "../../data/maps.js"
+    import { projections } from "../../data/projections.js"
+  
+    const width = "960";
+    const height = "500";
 
+    let data = [];
+    let mapName = COUNTRIES_110M;
+    let mapObjects = {};
+    let mapObjectNames = [];
+    let mapObjectName = Object.keys(maps[mapName].objects)[0];
 
-  let data;
-  const projection = geoAlbers();
-  const path = geoPath().projection(projection);
+    $: { 
+        console.log(mapName)
+        console.log(data)
 
-  onMount(async function () {
-    const response = await fetch(
-      "https://gist.githubusercontent.com/rveciana/a2a1c21ca1c71cd3ec116cc911e5fce9/raw/79564dfa2c56745ebd62f5655a6cc19d2cffa1ea/us.json"
-    );
-    const json = await response.json();
-    console.log(json)
-    const land = feature(json, json.objects.states);
-    console.log(land);
-    data = land;
-  });
-</script>
+        mapObjects = maps[mapName].objects
+        mapObjectNames = Object.keys(mapObjects);
+        mapObjectName = mapObjectNames.includes(mapObjectName) 
+          ? mapObjectName 
+          : mapObjectNames[0]; 
+        data = feature(maps[mapName], mapObjects[mapObjectName]).features
+        console.log(data)
+    }
 
-<svg width="960" height="500">
-  <!-- {#each data as feature} -->
-  <path 
-    d={path(data)} 
-    class="border"
-  />
-  <!-- {/each} -->
-</svg>
+    let currentProj = null;
+    let path = null;
+    let projectionName = "geoAlbers";
+    $: {
+      currentProj = projections[projectionName]();
+      path = geoPath().projection(currentProj);
+    }
 
-<style>
-  svg {
-    width: 960px;
-    height: 500px;
-  }
-  .border {
-    stroke: #444444;
-    fill: #cccccc;
-    border: 10px solid red;
-  }
-</style>
+  </script>
+
+  <select bind:value={mapName}>
+      {#each Object.keys(maps) as name }
+        <option>{name}</option>
+      {/each}
+  </select>
+  
+  <select bind:value={mapObjectName}>
+    {#each mapObjectNames as name }
+      <option>{name}</option>
+    {/each}
+  </select>
+
+  <select bind:value={projectionName}>
+    {#each Object.keys(projections) as name }
+      <option>{name}</option>
+    {/each}
+  </select>
+
+  <svg width="960" height="500">
+    {#each data as feature}
+    <path 
+      d={path(feature)} 
+      class="border"
+    />
+    {/each}
+  </svg>
+  
+  <style>
+    .border {
+      stroke: #444444;
+      fill: #cccccc;
+      border: 10px solid red;
+    }
+  </style>
+  
