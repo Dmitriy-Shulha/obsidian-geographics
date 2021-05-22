@@ -61,12 +61,13 @@
         class="border"
         on:mouseenter={() => {}}
         on:mousemove={(e) => {
-          coords.set({ x: e.layerX, y: e.layerY });
+          coords.set({ x: e.offsetX, y: e.offsetY });
           currentAreaName = feature.properties.name;
         }}
         on:mouseout={() => {
           currentAreaName = undefined;
         }}
+        on:click={()=>{console.log(`${feature.properties.name} clicked!`)}}
       />
     {/each}
   </g>
@@ -76,7 +77,7 @@
     opacity={currentAreaName ? 70 : 0}
     transform={`translate(${$coords.x},${$coords.y})`}
   >
-    <rect width={`${currentAreaName?.length * 0.65 ?? 10}em`} height="3em" fill="white" />
+    <rect width={`${currentAreaName?.length * 0.75 || 10}em`} height="2.5em" fill="white" />
     <text transform="translate(5,25)">
       {currentAreaName}
     </text>

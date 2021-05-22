@@ -57,14 +57,6 @@ export default class GeographicPlugin extends Plugin {
 
 		this.addSettingTab(new GeographicSettingsTab(this.app, this));
 
-		this.registerCodeMirror((cm: CodeMirror.Editor) => {
-			console.log('codemirror', cm);
-		});
-
-		this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
-			console.log('click', evt);
-		});
-
 		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
 	}
 
@@ -87,6 +79,7 @@ export default class GeographicPlugin extends Plugin {
 	}
 
 	async saveSettings() {
+		console.log(this.settings)
 		await this.saveData(this.settings);
 	}
 }
