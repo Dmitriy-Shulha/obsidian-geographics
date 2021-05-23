@@ -1,5 +1,5 @@
 <script>
-  import { geoPath } from "d3-geo";
+  import { geoPath, geoGraticule } from "d3-geo";
   import { feature } from "topojson";
   import { maps, COUNTRIES_110M } from "../../data/maps.js";
   import { projections } from "../../data/projections.js";
@@ -13,6 +13,10 @@
   let mapObjects = {};
   let mapObjectNames = [];
   let mapObjectName = Object.keys(maps[mapName].objects)[0];
+
+  let graticule = geoGraticule();
+  console.log(`Graticule: ${graticule()}`);
+  console.log(graticule.lines());
 
   $: {
     mapObjects = maps[mapName].objects;
@@ -67,8 +71,17 @@
         on:mouseout={() => {
           currentAreaName = undefined;
         }}
-        on:click={()=>{console.log(`${feature.properties.name} clicked!`)}}
+        on:click={() => {
+          console.log(`${feature.properties.name} clicked!`);
+          console.log(feature);
+        }}
       />
+    {/each}
+  </g>
+
+  <g>
+    {#each graticule.lines() as line}
+      <path d={path(line)} class="graticule" />
     {/each}
   </g>
 
@@ -77,7 +90,11 @@
     opacity={currentAreaName ? 70 : 0}
     transform={`translate(${$coords.x},${$coords.y})`}
   >
-    <rect width={`${currentAreaName?.length * 0.75 || 10}em`} height="2.5em" fill="white" />
+    <rect
+      width={`${currentAreaName?.length * 0.75 || 10}em`}
+      height="2.5em"
+      fill="white"
+    />
     <text transform="translate(5,25)">
       {currentAreaName}
     </text>
@@ -95,5 +112,11 @@
     /* opacity: 50%; */
     pointer-events: none;
     background-color: whitesmoke;
+  }
+
+  .graticule {
+    fill: none;
+    stroke: cyan;
+    stroke-width: 1px;
   }
 </style>
