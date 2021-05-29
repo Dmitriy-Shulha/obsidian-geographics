@@ -1,15 +1,36 @@
-import { Notice, Plugin, WorkspaceLeaf } from 'obsidian';
+import {Notice, Plugin, TFile, WorkspaceLeaf} from 'obsidian';
 import MapView from './ui/view/map';
-import { VIEW_TYPE_MAP } from './constants';
-import { GeographicSettingsTab, ISettings, DEFAULT_SETTINGS } from './settings';
+import { VIEW_TYPE_MAP } from './utils/constants';
+import { GeographicSettingsTab, ISettings, DEFAULT_SETTINGS } from './app/settings';
 import { GeographicModal } from './ui/modal';
 
 export default class GeographicPlugin extends Plugin {
 	settings: ISettings;
 	private view: MapView;
 
+	async onLayoutReady() {
+		console.log("getFiles()");
+		console.log(this.app.vault.getFiles());
+		const file = this.app.vault.getAbstractFileByPath('temp/topojson.md') as TFile;
+		console.log(await this.app.vault.read(file))
+	}
+
 	async onload() {
 		console.log('loading plugin');
+		console.log(this.app);
+		console.log(this.app.vault)
+		// console.log(this.app.vault.getRoot())
+		// console.log(this.app.vault.getFiles)
+		console.log(this.app.vault.getFiles())
+		console.log(this.app.vault.getAllLoadedFiles())
+		// console.log(this.app.vault.getName())
+		// console.log(this.app.vault.read)
+		// console.log(this.app.vault.getAbstractFileByPath('topojson.md'))
+
+		this.onLayoutReady = this.onLayoutReady.bind(this);
+
+		this.registerEvent(this.app.workspace.on("layout-ready", this.onLayoutReady))
+
 
 		await this.loadSettings();
 
@@ -75,7 +96,7 @@ export default class GeographicPlugin extends Plugin {
 	  }
 
 	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		this.settings = Object.assign({}, DEFAULT_SETTINGS as any, await this.loadData());
 	}
 
 	async saveSettings() {

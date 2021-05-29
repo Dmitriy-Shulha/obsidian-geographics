@@ -1,5 +1,5 @@
 import { ItemView, WorkspaceLeaf } from "obsidian";
-import { VIEW_TYPE_MAP, TRIGGER_MAP_OPEN } from "src/constants";
+import { VIEW_TYPE_MAP, TRIGGER_MAP_OPEN } from "../../utils/constants";
 import Map from '../component/Map.svelte';
 
 export default class MapView extends ItemView {

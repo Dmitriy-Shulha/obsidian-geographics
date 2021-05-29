@@ -1,5 +1,5 @@
 import { App, PluginSettingTab, Setting } from 'obsidian';
-import type GeographicPlugin from "./main";
+import type GeographicPlugin from "../main";
 
 export interface ISettings {
 	mySetting: string;

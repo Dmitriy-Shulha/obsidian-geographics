@@ -4,9 +4,11 @@
   import { maps, COUNTRIES_110M } from "../../data/maps.js";
   import { projections } from "../../data/projections.js";
   import { spring } from "svelte/motion";
+  import { cubicInOut } from "svelte/easing";
 
   const width = "960";
   const height = "500";
+  const showGraticule = true;
 
   let data = [];
   let mapName = COUNTRIES_110M;
@@ -57,12 +59,13 @@
   {/each}
 </select>
 
-<svg width="100%" height="100%">
+<svg class="svg" width="100%" height="100%">
   <g>
     {#each data as feature}
       <path
         d={path(feature)}
         class="border"
+        transition:cubicInOut
         on:mouseenter={() => {}}
         on:mousemove={(e) => {
           coords.set({ x: e.offsetX, y: e.offsetY });
@@ -79,11 +82,13 @@
     {/each}
   </g>
 
-  <g>
-    {#each graticule.lines() as line}
-      <path d={path(line)} class="graticule" />
-    {/each}
-  </g>
+  {#if showGraticule}
+    <g>
+      {#each graticule.lines() as line}
+        <path d={path(line)} class="graticule" transition:cubicInOut />
+      {/each}
+    </g>
+  {/if}
 
   <g
     id="tooltip"
@@ -102,10 +107,19 @@
 </svg>
 
 <style>
+  .svg {
+    /* transition: all 0.3s ease; */
+  }
+
   .border {
     stroke: #444444;
     fill: #cccccc;
     border: 10px solid red;
+    transition: all 3s ease;
+  }
+
+  .border:hover {
+    fill: #0297cf
   }
 
   #tooltip {
@@ -118,5 +132,6 @@
     fill: none;
     stroke: cyan;
     stroke-width: 1px;
+    transition: all 3s ease;
   }
 </style>
