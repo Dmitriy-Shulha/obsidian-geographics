@@ -1,6 +1,8 @@
 import { ItemView, WorkspaceLeaf } from "obsidian";
 import { VIEW_TYPE_MAP, TRIGGER_MAP_OPEN } from "../../utils/constants";
-import Map from '../component/Map.svelte';
+import Map from '../component/MapD3_SVG.svelte';
+import { projections } from "../../data/projections.js";
+import { maps, COUNTRIES_110M } from "../../data/maps.js";
 
 export default class MapView extends ItemView {
     private map: Map;
